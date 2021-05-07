@@ -5,17 +5,19 @@
     background-color="#545c64"
     text-color="#fff"
     active-text-color="#ffd04b"
+    router
   >
     <el-menu-item
       :index="item.path"
       v-for="item in noChildren"
       :key="item.path"
+      @click="clickMenu(item)"
     >
       <i :class="'el-icon-' + item.icon"></i>
       <span slot="title">{{ item.label }}</span>
     </el-menu-item>
     <el-submenu
-      :index="'' + index "
+      :index="'' + index"
       v-for="(item, index) in hasChildren"
       :key="index"
     >
@@ -28,6 +30,7 @@
           :index="subItem.path"
           v-for="(subItem, subIndex) in item.children"
           :key="subIndex"
+          @click="clickMenu(subItem)"
           >{{ subItem.label }}</el-menu-item
         >
       </el-menu-item-group>
@@ -86,6 +89,11 @@ export default {
     },
     hasChildren() {
       return this.asideMenu.filter((item) => item.children);
+    },
+  },
+  methods: {
+    clickMenu(val) {
+      this.$store.commit("selectMenu", val);
     },
   },
 };
