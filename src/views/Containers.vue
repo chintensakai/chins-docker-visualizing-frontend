@@ -39,21 +39,33 @@
     </el-row>
     <el-row>
       <el-table :data="tableData" style="width: 100%" stripe border>
+        <el-table-column label="ID" width="180">
+          <template slot-scope="scope">
+            <span style="margin-left: 10px">{{ scope.row.Id }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="Name" width="180">
           <template slot-scope="scope">
-            <i class="el-icon-time"></i>
-            <span style="margin-left: 10px">{{ scope.row.date }}</span>
+            <span style="margin-left: 10px">{{ scope.row.Names }}</span>
           </template>
         </el-table-column>
         <el-table-column label="State" width="180">
           <template slot-scope="scope">
-            <el-popover trigger="hover" placement="top">
-              <p>姓名: {{ scope.row.name }}</p>
-              <p>住址: {{ scope.row.address }}</p>
+            
               <div slot="reference" class="name-wrapper">
-                <el-tag size="medium">{{ scope.row.name }}</el-tag>
+                <el-tag size="medium">{{ scope.row.State }}</el-tag>
               </div>
-            </el-popover>
+          </template>
+        </el-table-column>
+        <el-table-column label="Image">
+          <template slot-scope="scope">
+            <span style="margin-left: 10px">{{ scope.row.Image }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Created">
+          <template slot-scope="scope">
+            <i class="el-icon-time"></i>
+            <span style="margin-left: 10px">{{ scope.row.Created }}</span>
           </template>
         </el-table-column>
         <el-table-column label="Actions">
@@ -69,48 +81,17 @@
             >
           </template>
         </el-table-column>
-        <el-table-column label="Image">
-          <template slot-scope="scope">
-            <i class="el-icon-time"></i>
-            <span style="margin-left: 10px">{{ scope.row.date }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="Created">
-          <template slot-scope="scope">
-            <i class="el-icon-time"></i>
-            <span style="margin-left: 10px">{{ scope.row.date }}</span>
-          </template>
-        </el-table-column>
       </el-table>
     </el-row>
   </div>
 </template>
 
 <script>
+import {getContainers} from "@/api/container.js"
 export default {
   data() {
     return {
       tableData: [
-        {
-          date: "Mysql",
-          name: "Running",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "Redis",
-          name: "Running",
-          address: "上海市普陀区金沙江路 1517 弄",
-        },
-        {
-          date: "Elasticsearch",
-          name: "Running",
-          address: "上海市普陀区金沙江路 1519 弄",
-        },
-        {
-          date: "Kibana",
-          name: "Running",
-          address: "上海市普陀区金沙江路 1516 弄",
-        },
       ],
     };
   },
@@ -121,7 +102,15 @@ export default {
     handleDelete(index, row) {
       console.log(index, row);
     },
+    getAllContainers() {
+      getContainers().then(res => {
+        this.tableData = res.data
+      })
+    }
   },
+  created() {
+    this.getAllContainers()
+  }
 };
 </script>
 
