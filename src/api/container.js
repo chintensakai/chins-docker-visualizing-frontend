@@ -9,3 +9,19 @@ export function getContainers() {
         url: chapter_base_url
     })
 }
+
+// 启动容器
+export function startContainer(containerId) {
+    return request({
+        method: 'put',
+        url: "api/container/start/" + containerId
+    })
+}
+
+// 停止容器
+export function stopContainer(containerId) {
+    return request({
+        method: 'put',
+        url: "api/container/stop/" + containerId
+    })
+}

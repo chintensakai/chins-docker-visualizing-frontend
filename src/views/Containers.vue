@@ -7,17 +7,18 @@
       <el-col :span="24"
         ><div class="container-title-button">
           <el-button-group>
-            <el-button type="success" size="medium"
+            <el-button type="success" size="medium" @click="startContainerClick"
               ><i class="el-icon-video-play"></i><span>Start</span></el-button
             >
-            <el-button type="danger" size="medium"
+            <el-button type="danger" size="medium" @click="stopContainerClick"
               ><i class="el-icon-switch-button"></i><span>Stop</span></el-button
             >
             <el-button type="danger" size="medium"
               ><i class="el-icon-close"></i><span>Kill</span></el-button
             >
             <el-button type="primary" size="medium"
-              ><i class="el-icon-refresh-left"></i><span>Restart</span></el-button
+              ><i class="el-icon-refresh-left"></i
+              ><span>Restart</span></el-button
             >
             <el-button type="primary" size="medium"
               ><i class="el-icon-video-pause"></i><span>Pause</span></el-button
@@ -31,30 +32,38 @@
           </el-button-group>
           <el-button-group>
             <el-button type="primary" size="medium"
-              ><i class="el-icon-plus"></i><span>Create container</span></el-button
+              ><i class="el-icon-plus"></i
+              ><span>Create container</span></el-button
             >
           </el-button-group>
         </div>
       </el-col>
     </el-row>
     <el-row>
-      <el-table :data="tableData" style="width: 100%" stripe border>
+      <el-table
+        :data="tableData"
+        style="width: 100%"
+        stripe
+        border
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="40"> </el-table-column>
         <el-table-column label="ID" width="180">
           <template slot-scope="scope">
             <span style="margin-left: 10px">{{ scope.row.Id }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="Name" width="180">
+        <el-table-column label="Name" width="160">
           <template slot-scope="scope">
             <span style="margin-left: 10px">{{ scope.row.Names }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="State" width="180">
+        <el-table-column label="State" width="160">
           <template slot-scope="scope">
-            
-              <div slot="reference" class="name-wrapper">
-                <el-tag size="medium">{{ scope.row.State }}</el-tag>
-              </div>
+            <div slot="reference" class="name-wrapper">
+              <el-tag size="medium" :type="scope.row.State === 'exited' ? 'primary' : 'success'"
+              >{{ scope.row.State }}</el-tag>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="Image">
@@ -87,12 +96,14 @@
 </template>
 
 <script>
-import {getContainers} from "@/api/container.js"
+import { getContainers } from "@/api/container.js";
+import { startContainer } from "@/api/container.js";
+import { stopContainer } from "@/api/container.js";
 export default {
   data() {
     return {
-      tableData: [
-      ],
+      tableData: [],
+      containerId: "",
     };
   },
   methods: {
@@ -103,14 +114,27 @@ export default {
       console.log(index, row);
     },
     getAllContainers() {
-      getContainers().then(res => {
-        this.tableData = res.data
+      getContainers().then((res) => {
+        this.tableData = res.data;
+      });
+    },
+    handleSelectionChange(val) {
+      this.containerId = val[0].Id;
+    },
+    startContainerClick() {
+      startContainer(this.containerId).then(() => {
+        this.getAllContainers()
+      })
+    },
+    stopContainerClick() {
+      stopContainer(this.containerId).then(() => {
+        this.getAllContainers()
       })
     }
   },
   created() {
-    this.getAllContainers()
-  }
+    this.getAllContainers();
+  },
 };
 </script>
 
@@ -146,6 +170,6 @@ el-row:last-child {
 }
 
 .container-title-button i {
-    font-weight: 700;
+  font-weight: 700;
 }
 </style>
